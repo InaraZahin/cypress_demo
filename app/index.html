@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Demo Login</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <h1>Login</h1>
+  <form id="login-form">
+    <input data-cy="username" placeholder="Username" autocomplete="username">
+    <input data-cy="password" type="password" placeholder="Password" autocomplete="current-password">
+    <button data-cy="submit" type="submit">Sign in</button>
+  </form>
+  <p data-cy="error" class="error" hidden></p>
+  <script>
+    document.getElementById('login-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const user = document.querySelector('[data-cy=username]').value.trim();
+      const pass = document.querySelector('[data-cy=password]').value;
+      const error = document.querySelector('[data-cy=error]');
+      if (!user || !pass) {
+        error.textContent = 'Username and password are required';
+        error.hidden = false;
+      } else if (user === 'student' && pass === 'Password123') {
+        localStorage.setItem('user', user);
+        location.href = '/todos.html';
+      } else {
+        error.textContent = 'Invalid username or password';
+        error.hidden = false;
+      }
+    });
+  </script>
+</body>
+</html>

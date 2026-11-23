@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Demo Todos</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <h1>Welcome, <span data-cy="welcome-user"></span></h1>
+  <form id="todo-form">
+    <input data-cy="new-todo" placeholder="What needs to be done?">
+    <button data-cy="add-todo" type="submit">Add</button>
+  </form>
+  <ul data-cy="todo-list"></ul>
+  <p data-cy="todo-count"></p>
+  <button data-cy="logout">Log out</button>
+  <script>
+    const user = localStorage.getItem('user');
+    if (!user) location.href = '/';
+    document.querySelector('[data-cy=welcome-user]').textContent = user;
+
+    const list = document.querySelector('[data-cy=todo-list]');
+    const count = document.querySelector('[data-cy=todo-count]');
+    const updateCount = () => {
+      const left = list.querySelectorAll('li:not(.done)').length;
+      count.textContent = `${left} item${left === 1 ? '' : 's'} left`;
+    };
+
+    document.getElementById('todo-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const input = document.querySelector('[data-cy=new-todo]');
+      const text = input.value.trim();
+      if (!text) return;
+      const li = document.createElement('li');
+      li.setAttribute('data-cy', 'todo-item');
+      li.innerHTML = '<span></span><div><button data-cy="toggle">✓</button> <button data-cy="delete">✕</button></div>';
+      li.querySelector('span').textContent = text;
+      li.querySelector('[data-cy=toggle]').onclick = () => { li.classList.toggle('done'); updateCount(); };
+      li.querySelector('[data-cy=delete]').onclick = () => { li.remove(); updateCount(); };
+      list.appendChild(li);
+      input.value = '';
+      updateCount();
+    });
+
+    document.querySelector('[data-cy=logout]').onclick = () => {
+      localStorage.removeItem('user');
+      location.href = '/';
+    };
+    updateCount();
+  </script>
+</body>
+</html>
